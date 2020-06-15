@@ -2,6 +2,7 @@ import os
 
 from flask_sqlalchemy import SQLAlchemy
 from flask import Flask, render_template , session, abort, redirect, url_for
+from flask_migrate import Migrate
 from flask_bootstrap import Bootstrap
 from forms import UserForm
 
@@ -21,9 +22,11 @@ app.config['SQLALCHEMY_DATABASE_URI'] = \
              POSTGRES_USER, POSTGRES_DB=POSTGRES_DB, POSTGRES_PORT_N = POSTGRES_PORT_N )
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 bootstrap = Bootstrap(app)
+
 #DB classes
 
 db = SQLAlchemy(app)
+migrate = Migrate(app, db)
 
 class Role(db.Model):
     __tablename__ = 'roles'
