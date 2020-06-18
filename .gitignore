@@ -1,3 +1,6 @@
 launch_flask.txt
 venv
 api_venv
+__pycache__
+.vscode
+tests/__pycache__
