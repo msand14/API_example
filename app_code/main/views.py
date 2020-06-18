@@ -4,9 +4,9 @@ from .forms import UserForm
 
 #Functions
 @main.route('/', methods=['GET', 'POST'])
-def main_page():
+def index():
     form = UserForm()
     if form.validate_on_submit():
         session['name'] = form.name.data
-        return redirect(url_for('.main_page'))
-    return render_template('user_main.html',form = form, user_name = session.get('name'))
+        return redirect(url_for('.index'))
+    return render_template('index.html',form = form, user_name = session.get('name'))
