@@ -1,12 +1,14 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap
 from flask_sqlalchemy import SQLAlchemy
+from flask_mail import Mail
 from flask_login import LoginManager
 from config import config
 
 bootstrap = Bootstrap()
 db = SQLAlchemy()
 login_manager = LoginManager()
+mail = Mail()
 login_manager.login_view = 'auth.login'
 def create_app(cfg_name):
     app = Flask(__name__)
@@ -16,7 +18,7 @@ def create_app(cfg_name):
 
     bootstrap.init_app(app)
     db.init_app(app)
-
+    mail.init_app(app)
     login_manager.init_app(app)
 
     from .auth import auth as auth_Blueprint
