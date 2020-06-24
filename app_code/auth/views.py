@@ -1,6 +1,6 @@
 from flask import render_template,  redirect, url_for, request, flash
 from . import auth
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, RegisterFormStudent, RegisterFormTeacher
 from ..models import User
 from ..models import db
 from ..email import  send_email
@@ -28,9 +28,29 @@ def logout():
     flash('You have been logged out!','error')
     return redirect((url_for('main.index')))
 
-@auth.route('/register', methods=['GET', 'POST'])
-def register():
-    form = RegisterForm()
+@auth.route('/register/<who>', methods=['GET', 'POST'])
+def register(who):
+    if str(who) == 'student':
+        form = RegisterFormStudent()
+    elif who == 'teacher':
+        form = RegisterFormTeacher()
+    else:
+        form = RegisterFormStudent()   
+    if form.validate_on_submit():
+        user = User(username = form.username.data,
+                email = form.email.data,
+                password = form.password.data)
+        db.session.add(user)
+        db.session.commit()
+        token = user.generate_confirmation_token()
+        send_email(user.email,'Account Confirmation','auth/email/confirm', user = user, token=token)
+        flash('The register was succesfull. Now you can log in with your credentials.')
+        return redirect(url_for('auth.login'))
+    return render_template('auth/register.html', form = form)
+
+@auth.route('/register_teacher', methods=['GET', 'POST'])
+def register_teacher():
+    form = RegisterFormTeacher()
     if form.validate_on_submit():
         user = User(username = form.username.data,
                 email = form.email.data,
